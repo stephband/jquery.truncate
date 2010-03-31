@@ -17,7 +17,8 @@
 	
 	var options = {
 				marker: '\u2026',
-				truncateByWord: false
+				truncateByWord: false,
+				minlength: 1
 			},
 			// Uses a zero width space for testing
 			testNode = jQuery('<span/>').html('\u200B');
@@ -45,7 +46,7 @@
 					match = o.match || data && data.match || '&nbsp;',
 					newHtml = html,
 					length = html.length,
-					targetOffset, normalOffset, currentOffset, x;
+					targetOffset, normalOffset, currentOffset, x, y;
 			
 			if ( !data ) {
 				node.data('truncate', {
@@ -83,22 +84,27 @@
 				return;
 			};
 			
+			// x keeps track of the amount we're adding or subtracting from the
+			// length, while y stops us crashing the browser in an infinite loop
+			// by turning false when x has had a value of 1 for two turns.
 			x = length;
+			y = true;
 			
 			// Home in.
-			while ( x > 1 || currentOffset.top > targetOffset.top ) {
+			while ( x > 1 || y && currentOffset.top > targetOffset.top ) {
+				y = ( x !== 1 );
 				x = Math.ceil(x/2);
 				
-				length = currentOffset.top > targetOffset.top ?
+				length = ( currentOffset.top > targetOffset.top ?
 					length - x :
-					length + x ;
+					length + x ) ;
 				
 				newHtml = html.slice(0, length) + o.marker;
 				fillNode(node, newHtml, testNode);
 				currentOffset = testNode.offset();
 			}
 			
-			// Lop off letters until we find a space.
+			// If truncating by words, lop off letters until we find a space.
 			if ( o.truncateByWord ) {
 				while ( length-- ) {
 					if ( /\s/.test( html[length+1] ) ) {
