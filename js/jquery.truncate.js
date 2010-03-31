@@ -39,7 +39,8 @@
 		
 		var o = jQuery.extend({}, options, opt);
 		
-		return this.each(function(){
+		return this
+		.each(function(){
 			var node = jQuery(this),
 					data = node.data('truncate'),
 					html = text || data && data.html || node.html(),
@@ -86,13 +87,12 @@
 			
 			// x keeps track of the amount we're adding or subtracting from the
 			// length, while y stops us crashing the browser in an infinite loop
-			// by turning false when x has had a value of 1 for two turns.
+			// by turning falsy when x has had a value of 1 for a couple of turns
 			x = length;
-			y = true;
+			y = 1;
 			
 			// Home in.
-			while ( x > 1 || y && currentOffset.top > targetOffset.top ) {
-				y = ( x !== 1 );
+			while ( x > 1 || y-- && currentOffset.top > targetOffset.top ) {
 				x = Math.ceil(x/2);
 				
 				length = ( currentOffset.top > targetOffset.top ?
