@@ -3,13 +3,14 @@
 // 0.5
 // Stephen Band
 // 
-// Truncates the html of a node so that the node is no greater than one line high
+// Truncates the html of a node so that the node is no higher than content in options.match
 // Options:
 // marker					- character or jQuery object placed at end of truncation.
 // match 					- content to match in height, typically smething like '<br /><br />'.
 // truncateByWord - causes truncation only to happen on word boundaries.
 //
 // TODO:
+// Support html tags
 // Support file extensions by truncating the middle a la OS X: 'xxxxxx...xxx'
 
 (function(undefined){
@@ -35,7 +36,7 @@
 			text = undefined;
 		}
 		
-		o = jQuery.extend({}, options, opt);
+		var o = jQuery.extend({}, options, opt);
 		
 		return this.each(function(){
 			var node = jQuery(this),
